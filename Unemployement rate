@@ -1,0 +1,25 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the data from CSV files
+unemployment_data = pd.read_csv('unemployment_data.csv')
+unemployment_rate_data = pd.read_csv('unemployment_rate_data.csv')
+
+# Merge the two dataframes based on common columns
+merged_data = pd.merge(unemployment_data, unemployment_rate_data, on=['Region', 'Date'])
+
+# Calculate the unemployment rate as a percentage of the total labor force
+merged_data['Unemployment Rate (%)'] = merged_data['Estimated Unemployment Rate (%)'] * 100 / merged_data['Estimated Labour Participation Rate (%)']
+
+# Calculate the average unemployment rate by region
+average_unemployment_rate = merged_data.groupby('Region')['Unemployment Rate (%)'].mean()
+
+# Plotting the average unemployment rate by region
+plt.figure(figsize=(12, 6))
+average_unemployment_rate.plot(kind='bar', color='skyblue')
+plt.title('Average Unemployment Rate by Region')
+plt.xlabel('Region')
+plt.ylabel('Unemployment Rate (%)')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
